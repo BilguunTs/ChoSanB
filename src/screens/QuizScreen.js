@@ -25,30 +25,34 @@ const {width, height} = Dimensions.get('window');
 const PRIME_COLOR = '#fff176';
 
 export default function QuizScreen() {
-  const [current, setCurrent] = useState(1);
+  const [current, setCurrent] = useState(0);
   const [quiz, setQuiz] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [activateBtn, setActivateBtn] = useState(false);
   const [currentSelectedAnswer, setCurrentSelectedAnswer] = useState(0);
   useEffect(() => {
-    setQuiz(dummyData[0]);
-  }, []);
-  const selected = useSharedValue(current);
+    if (quiz == null) {
+      setQuiz(dummyData[0]);
+    }
+    console.log(answers);
+    console.log(current);
+    console.log(dummyData.length);
+  }, [current]);
+  const aCurrent = useSharedValue(current);
   const pStyle = useAnimatedStyle(() => {
-    const width = interpolate(selected.value, [1, dummyData.length], [1, 100]);
+    const width = interpolate(aCurrent.value, [0, dummyData.length], [1, 100]);
     return {width: `${width}%`};
   });
-  const handleNextAction = () => {
-    if (current == dummyData.length) {
+  const handleNextAction = answer => {
+    if (current >= dummyData.length) {
+      aCurrent.value = withSpring(0);
       setCurrent(0);
       setQuiz(dummyData[0]);
       return;
     } else {
-      (selected.value = withTiming(current + 1, {
-        duration: 500,
-        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-      })),
-        setCurrent(current + 1);
+      setAnswers([...answers, answer]);
+      aCurrent.value = withSpring(aCurrent.value + 1);
+      setCurrent(current + 1);
       setQuiz(dummyData[current]);
     }
     //selected.value = current + 1;
@@ -58,8 +62,8 @@ export default function QuizScreen() {
       return (
         <Quiz
           quiz={quiz}
-          actionHandler={(selected, activate) => {
-            setActivateBtn(activate);
+          actionHandler={response => {
+            handleNextAction(response);
           }}
         />
       );
@@ -93,13 +97,6 @@ export default function QuizScreen() {
       <View style={styles.body}>
         <RenderQuiz />
       </View>
-      <View style={styles.footer}>
-        <CommonBtn
-          text="Цааш"
-          active={activateBtn}
-          onPress={handleNextAction.bind(this)}
-        />
-      </View>
     </View>
   );
 }
@@ -112,7 +109,7 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    flex: 0.8,
+    flex: 1,
   },
   footer: {
     padding: 10,

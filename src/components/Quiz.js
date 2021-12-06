@@ -5,25 +5,25 @@ import Animated, {
   LightSpeedOutLeft,
 } from 'react-native-reanimated';
 //import Card from '../components/Card';
-import {ChoiceBtn} from './Buttons';
+import {ChoiceBtn, CommonBtn} from './Buttons';
 
 export default function ({quiz, actionHandler = () => {}}) {
-  const [selected, setSelected] = useState([]);
-
+  const [selected, setSelected] = useState(null);
+  const handleNextAction = () => {
+    actionHandler(selected);
+  };
   const getAnswerChoices = () => {
     return (
       <FlatList
         data={quiz.options}
         renderItem={({item, index}) => (
           <ChoiceBtn
-            active={index + 1 == selected}
+            active={selected == quiz.options[index]}
             onPress={() => {
-              if (index + 1 == selected) {
-                actionHandler(0, false);
-                //setSelected(0);
+              if (quiz.options[index] == selected) {
+                setSelected(null);
               } else {
-                actionHandler(index + 1, true);
-                //setSelected(index + 1);
+                setSelected(quiz.options[index]);
               }
             }}
             text={item}
@@ -48,6 +48,13 @@ export default function ({quiz, actionHandler = () => {}}) {
         <Text style={styles.question}>{quiz.question}</Text>
       </View>
       <View style={styles.body}>{getAnswerChoices()}</View>
+      <View style={styles.footer}>
+        <CommonBtn
+          text="Цааш"
+          active={selected !== null}
+          onPress={handleNextAction.bind(this)}
+        />
+      </View>
     </Animated.View>
   );
 }
@@ -64,7 +71,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   body: {
-    flex: 0.7,
+    flex: 0.5,
   },
   footer: {
     flex: 0.2,
