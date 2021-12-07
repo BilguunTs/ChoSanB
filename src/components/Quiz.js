@@ -7,7 +7,7 @@ import Animated, {
 //import Card from '../components/Card';
 import {ChoiceBtn, CommonBtn} from './Buttons';
 
-export default function ({quiz, actionHandler = () => {}}) {
+export default function ({quiz, isLast = false, actionHandler = () => {}}) {
   const [selected, setSelected] = useState(null);
   const handleNextAction = () => {
     actionHandler(selected);
@@ -50,7 +50,7 @@ export default function ({quiz, actionHandler = () => {}}) {
       <View style={styles.body}>{getAnswerChoices()}</View>
       <View style={styles.footer}>
         <CommonBtn
-          text="Цааш"
+          text={isLast ? 'Дуусгах' : 'Цааш'}
           active={selected !== null}
           onPress={handleNextAction.bind(this)}
         />
