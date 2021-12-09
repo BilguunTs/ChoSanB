@@ -48,6 +48,7 @@ export default function QuizScreen() {
     if (current >= dummyData.length - 1) {
       textFlagVal.value = withSpring(1);
       setShowResult(true);
+      setAnswers([...answers, answer]);
       return;
     } else {
       setAnswers([...answers, answer]);
@@ -154,11 +155,14 @@ export default function QuizScreen() {
         </View>
       </View>
       <View style={styles.body}>
-        {showResult ? <ResultScreen /> : <RenderQuiz />}
+        {showResult ? (
+          <ResultScreen answers={answers} quizs={dummyData} />
+        ) : (
+          <RenderQuiz />
+        )}
       </View>
       <CancelModal
         actionHandler={() => {
-          console.log('hey duder');
           setCancelRequest(false);
         }}
         shouldRender={cancelRequest}

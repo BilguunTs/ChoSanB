@@ -1,5 +1,14 @@
 import React, {useState} from 'react';
-import {FlatList, TouchableOpacity, View, Text, StyleSheet} from 'react-native';
+import {
+  FlatList,
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
+
 import Animated, {
   FadeInDown,
   FadeOutUp,
@@ -11,41 +20,57 @@ import Animated, {
 } from 'react-native-reanimated';
 //import Card from '../components/Card';
 import Icons from 'react-native-vector-icons/MaterialIcons';
+import QuizAsListItem from './QuizAsListItem';
 
-export default function ({answers, actionHandler = () => {}}) {
+export default function ({answers, quizs, actionHandler = () => {}}) {
   const [showResult, setShowResult] = useState(false);
+  const [mistake, setMistake] = useState(0);
   const handleNextAction = () => {
     actionHandler(selected);
   };
-  // const getAnswerChoices = () => {
-  //   return (
-  //     <FlatList
-  //       data={quiz.options}
-  //       renderItem={({item, index}) => (
-  //         <ChoiceBtn
-  //           active={selected == quiz.options[index]}
-  //           onPress={() => {
-  //             if (quiz.options[index] == selected) {
-  //               setSelected(null);
-  //             } else {
-  //               setSelected(quiz.options[index]);
-  //             }
-  //           }}
-  //           text={item}
-  //         />
-  //       )}
-  //       numColumns={2}
-  //       keyExtractor={(_item, index) => index.toString()}
-  //     />
-  //   );
-  // };
+  const RenderQuizResult = () => {
+    let mistakeCount = 0;
+    return (
+      <ScrollView
+        contentContainerStyle={{
+          alignItems: 'center',
+          flexGrow: 1,
+          paddingBottom: 100,
+        }}>
+        {quizs.map((item, index) => {
+          if (answers[index] !== item.correctAnswer) {
+            mistakeCount = mistakeCount + 1;
+          }
+          setMistake(mistakeCount);
+          return (
+            <QuizAsListItem
+              key={index}
+              order={index + 1}
+              question={item.question}
+              givenAnswer={answers[index]}
+              correctAnswer={item.correctAnswer}
+            />
+          );
+        })}
+      </ScrollView>
+    );
+  };
 
   const handlePress = () => {
     setShowResult(true);
   };
 
   return showResult ? (
-    <RenderResultList />
+    <View>
+      <View style={{paddingHorizontal: 20}}>
+        <View style={{marginBottom: 10, flexDirection: 'row'}}>
+          <Text style={{fontWeight: 'bold', color: '#000', fontSize: 30}}>
+            Үр дүн
+          </Text>
+        </View>
+      </View>
+      <RenderQuizResult />
+    </View>
   ) : (
     <Animated.View
       style={{
@@ -67,7 +92,7 @@ export default function ({answers, actionHandler = () => {}}) {
             padding: 10,
             margin: 3,
             borderRadius: 50,
-            height: 100,
+            minHeight: 100,
             justifyContent: 'center',
             alignItems: 'center',
             width: 100,
@@ -117,12 +142,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-const RenderResultList = () => {
-  return (
-    <Animated.View
-      entering={FadeInDown.duration(600)}
-      style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text style={{color: '#000'}}>hi</Text>
-    </Animated.View>
-  );
-};
