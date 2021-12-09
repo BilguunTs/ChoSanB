@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   FlatList,
   TouchableOpacity,
@@ -22,14 +22,14 @@ import Animated, {
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import QuizAsListItem from './QuizAsListItem';
 
-export default function ({answers, quizs, actionHandler = () => {}}) {
+const QuizResult = ({answers, quizs, actionHandler = () => {}}) => {
   const [showResult, setShowResult] = useState(false);
   const [mistake, setMistake] = useState(0);
   const handleNextAction = () => {
     actionHandler(selected);
   };
+
   const RenderQuizResult = () => {
-    let mistakeCount = 0;
     return (
       <ScrollView
         contentContainerStyle={{
@@ -38,14 +38,11 @@ export default function ({answers, quizs, actionHandler = () => {}}) {
           paddingBottom: 100,
         }}>
         {quizs.map((item, index) => {
-          if (answers[index] !== item.correctAnswer) {
-            mistakeCount = mistakeCount + 1;
-          }
-          setMistake(mistakeCount);
+          console.log(item.correctAnswer);
           return (
             <QuizAsListItem
               key={index}
-              order={index + 1}
+              order={index}
               question={item.question}
               givenAnswer={answers[index]}
               correctAnswer={item.correctAnswer}
@@ -59,7 +56,6 @@ export default function ({answers, quizs, actionHandler = () => {}}) {
   const handlePress = () => {
     setShowResult(true);
   };
-
   return showResult ? (
     <View>
       <View style={{paddingHorizontal: 20}}>
@@ -103,16 +99,16 @@ export default function ({answers, quizs, actionHandler = () => {}}) {
           style={{
             color: '#000',
             fontSize: 20,
-            fontWeight: '300',
+            fontWeight: '400',
             textAlign: 'center',
           }}>
-          Үр дүн харах
+          дүнгээ харах
         </Text>
       </View>
       <View style={styles.footer}></View>
     </Animated.View>
   );
-}
+};
 const styles = StyleSheet.create({
   questionContainer: {},
   question: {
@@ -142,3 +138,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+export default QuizResult;

@@ -25,12 +25,29 @@ const CancelModal = ({
         ]}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => actionHandler()}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </Pressable>
+            <Text style={styles.modalTitle}>
+              Та гарахдаа итгэлтэй байна уу?
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <Pressable
+                style={[styles.button]}
+                onPress={() => actionHandler(true)}>
+                <Text style={[styles.textStyle, {color: 'red', fontSize: 20}]}>
+                  Тийм
+                </Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button]}
+                onPress={() => actionHandler(false)}>
+                <Text style={[styles.textStyle, {color: '#000', fontSize: 20}]}>
+                  Үгүй
+                </Text>
+              </Pressable>
+            </View>
           </View>
         </View>
       </View>
@@ -50,7 +67,7 @@ const styles = StyleSheet.create({
     minWidth: 300,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 25,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -62,23 +79,21 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+    borderRadius: 15,
+    padding: 15,
+    margin: 15,
+    backgroundColor: '#f5f5f5',
   },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
+
   textStyle: {
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  modalText: {
+  modalTitle: {
     marginBottom: 15,
+    fontSize: 20,
+    fontWeight: 'bold',
     textAlign: 'center',
     color: '#000',
   },

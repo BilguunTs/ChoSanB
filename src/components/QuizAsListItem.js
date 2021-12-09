@@ -83,13 +83,19 @@ export default function ({
         exiting={LightSpeedOutLeft.damping(1000)}
         entering={SlideInDown.duration(1000).delay(100 * order)}>
         <View style={styles.sideLeft}>
-          <Text style={{color: '#000'}}>{order}</Text>
+          <Text style={{color: '#000', fontWeight: '300'}}>{order + 1}</Text>
         </View>
         <View style={{flex: 0.9}}>
           <Text style={styles.question}>{question}</Text>
           <Animated.View style={[animatedDesStyle]}>
-            <Text style={{color: '#000', fontSize: 20, fontWeight: '300'}}>
-              Зөв хариут{'\n'} {correctAnswer}
+            <Text
+              style={{
+                color: '#000',
+                fontSize: 20,
+                textAlign: 'center',
+                fontWeight: '300',
+              }}>
+              {correctAnswer}
             </Text>
           </Animated.View>
         </View>

@@ -11,9 +11,10 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
   interpolate,
-  BounceInUp,
+  BounceInDown,
   BounceOutDown,
   withDelay,
+  BounceInRight,
 } from 'react-native-reanimated';
 //import Card from '../components/Card';
 import Quiz from '../components/Quiz';
@@ -26,7 +27,7 @@ const {width, height} = Dimensions.get('window');
 
 const PRIME_COLOR = '#fff176';
 const GREEN_COLOR = '#69f0ae';
-export default function QuizScreen() {
+export default function QuizScreen({jumpTo}) {
   const [current, setCurrent] = useState(0);
   const [quiz, setQuiz] = useState(null);
   const [answers, setAnswers] = useState([]);
@@ -47,8 +48,9 @@ export default function QuizScreen() {
   const handleNextAction = answer => {
     if (current >= dummyData.length - 1) {
       textFlagVal.value = withSpring(1);
-      setShowResult(true);
+
       setAnswers([...answers, answer]);
+      setShowResult(true);
       return;
     } else {
       setAnswers([...answers, answer]);
@@ -104,7 +106,10 @@ export default function QuizScreen() {
     };
   });
   return (
-    <View style={styles.container}>
+    <Animated.View
+      entering={BounceInRight.duration(1500)}
+      exiting={BounceOutDown.duration(1000)}
+      style={[styles.container]}>
       <View style={{padding: 10}}>
         <View style={{flexDirection: 'row'}}>
           <View
@@ -162,12 +167,15 @@ export default function QuizScreen() {
         )}
       </View>
       <CancelModal
-        actionHandler={() => {
+        actionHandler={exit => {
+          if (exit) {
+            jumpTo(0);
+          }
           setCancelRequest(false);
         }}
         shouldRender={cancelRequest}
       />
-    </View>
+    </Animated.View>
   );
 }
 

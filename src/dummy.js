@@ -27,6 +27,6 @@ export const dummyData = [
   {
     question: 'Плато гэж хэн байсан бэ?',
     options: ['Философич', 'Математикч', 'Барималч', 'Тийм хүн байгаагүй'],
-    correctАnswer: 'Философич',
+    correctAnswer: 'Философич',
   },
 ];
