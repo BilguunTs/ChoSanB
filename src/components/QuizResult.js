@@ -1,34 +1,31 @@
 import React, {useState, useEffect} from 'react';
 import {
-  FlatList,
   TouchableOpacity,
   View,
   Text,
   StyleSheet,
   ScrollView,
-  Dimensions,
 } from 'react-native';
 
-import Animated, {
-  FadeInDown,
-  FadeOutUp,
-  interpolate,
-  SlideInRight,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
+import Animated, {FadeOutUp, SlideInRight} from 'react-native-reanimated';
 //import Card from '../components/Card';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import QuizAsListItem from './QuizAsListItem';
-
-const QuizResult = ({answers, quizs, actionHandler = () => {}}) => {
+import {CancelIconBtn} from '../components/Buttons';
+const QuizResult = ({
+  answers,
+  quizs,
+  actionHandler = () => {},
+  setCancelRequest = function () {},
+}) => {
   const [showResult, setShowResult] = useState(false);
-  const [mistake, setMistake] = useState(0);
+  const [procentage, setProcentage] = useState(0);
   const handleNextAction = () => {
     actionHandler(selected);
   };
-
+  useEffect(() => {
+    CountMistake();
+  }, []);
   const RenderQuizResult = () => {
     return (
       <ScrollView
@@ -38,7 +35,6 @@ const QuizResult = ({answers, quizs, actionHandler = () => {}}) => {
           paddingBottom: 100,
         }}>
         {quizs.map((item, index) => {
-          console.log(item.correctAnswer);
           return (
             <QuizAsListItem
               key={index}
@@ -52,17 +48,52 @@ const QuizResult = ({answers, quizs, actionHandler = () => {}}) => {
       </ScrollView>
     );
   };
-
+  const CountMistake = () => {
+    let mistake = 0;
+    for (let i = 0; i < quizs.length; i++) {
+      if (quizs[i].correctAnswer !== answers[i]) {
+        mistake++;
+      }
+    }
+    setProcentage(((quizs.length - mistake) * 100) / quizs.length);
+  };
   const handlePress = () => {
     setShowResult(true);
+  };
+  const getResultTextColor = () => {
+    if (procentage >= 0 && procentage < 60) {
+      return 'red';
+    } else if (procentage >= 60 && procentage < 80) {
+      return 'orange';
+    } else if (procentage >= 80 && procentage <= 90) {
+      return 'lightgreen';
+    } else {
+      return 'green';
+    }
   };
   return showResult ? (
     <View>
       <View style={{paddingHorizontal: 20}}>
         <View style={{marginBottom: 10, flexDirection: 'row'}}>
-          <Text style={{fontWeight: 'bold', color: '#000', fontSize: 30}}>
-            Үр дүн
-          </Text>
+          <View style={[{flex: 0.7, justifyContent: 'center'}]}>
+            <Text style={{fontWeight: 'bold', color: '#000', fontSize: 30}}>
+              <Text style={{fontWeight: '300'}}>Дүн: </Text>
+              <Text style={{color: getResultTextColor()}}>{procentage}%</Text>
+            </Text>
+          </View>
+          <View style={{flex: 0.1, justifyContent: 'center'}}></View>
+          <View
+            style={{
+              flex: 0.2,
+              justifyContent: 'center',
+            }}>
+            <CancelIconBtn
+              size={35}
+              onPress={() => {
+                setCancelRequest(true);
+              }}
+            />
+          </View>
         </View>
       </View>
       <RenderQuizResult />
@@ -99,10 +130,10 @@ const QuizResult = ({answers, quizs, actionHandler = () => {}}) => {
           style={{
             color: '#000',
             fontSize: 20,
-            fontWeight: '400',
+            fontWeight: '200',
             textAlign: 'center',
           }}>
-          дүнгээ харах
+          дүн харах
         </Text>
       </View>
       <View style={styles.footer}></View>

@@ -1,28 +1,21 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   interpolate,
-  BounceInDown,
   BounceOutDown,
   withDelay,
   BounceInRight,
 } from 'react-native-reanimated';
 //import Card from '../components/Card';
 import Quiz from '../components/Quiz';
-import {CancelIconBtn, Label} from '../components/Buttons';
+import {CancelIconBtn} from '../components/Buttons';
 import {dummyData} from '../dummy';
 import CancelModal from '../components/Modal';
-import Icons from 'react-native-vector-icons/MaterialIcons';
 import ResultScreen from '../components/QuizResult';
+import {shuffle} from '../utils';
 const {width, height} = Dimensions.get('window');
 
 const PRIME_COLOR = '#fff176';
@@ -30,13 +23,17 @@ const GREEN_COLOR = '#69f0ae';
 export default function QuizScreen({jumpTo}) {
   const [current, setCurrent] = useState(0);
   const [quiz, setQuiz] = useState(null);
+  const [quizs, setQuizs] = useState([]);
   const [answers, setAnswers] = useState([]);
-  const [activateBtn, setActivateBtn] = useState(false);
-  const [currentSelectedAnswer, setCurrentSelectedAnswer] = useState(0);
   const [cancelRequest, setCancelRequest] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const textFlagVal = useSharedValue(0);
 
+  useEffect(() => {
+    if (quizs.length == 0) {
+      setQuizs(shuffle(dummyData, 10));
+    }
+  }, []);
   useEffect(() => {
     if (quiz == null) {
       setQuiz(dummyData[0]);
@@ -46,7 +43,7 @@ export default function QuizScreen({jumpTo}) {
   const aCurrent = useSharedValue(current);
 
   const handleNextAction = answer => {
-    if (current >= dummyData.length - 1) {
+    if (current >= quizs.length - 1) {
       textFlagVal.value = withSpring(1);
 
       setAnswers([...answers, answer]);
@@ -57,7 +54,7 @@ export default function QuizScreen({jumpTo}) {
       aCurrent.value = withSpring(aCurrent.value + 1);
       textFlagVal.value = withSpring(1);
       setCurrent(current + 1);
-      setQuiz(dummyData[current + 1]);
+      setQuiz(quizs[current + 1]);
     }
     //selected.value = current + 1;
   };
@@ -65,7 +62,7 @@ export default function QuizScreen({jumpTo}) {
     if (quiz !== null) {
       return (
         <Quiz
-          isLast={current == dummyData.length - 1}
+          isLast={current == quizs.length - 1}
           quiz={quiz}
           actionHandler={response => {
             handleNextAction(response);
@@ -82,7 +79,7 @@ export default function QuizScreen({jumpTo}) {
     const w = interpolate(textFlagVal.value, [0, 1], [2, 5]);
     return {
       color: 'gray',
-      fontSize: 25,
+      fontSize: 20,
       fontWeight: `${w}00`,
       opacity,
       transform: [{scale}, {translateY}],
@@ -111,57 +108,63 @@ export default function QuizScreen({jumpTo}) {
       exiting={BounceOutDown.duration(1000)}
       style={[styles.container]}>
       <View style={{padding: 10}}>
-        <View style={{flexDirection: 'row'}}>
-          <View
-            style={[
-              {flex: 0.2, justifyContent: 'center', alignItems: 'center'},
-            ]}>
-            <Animated.Text style={[textContainerStyle]}>
-              {current + 1}/{dummyData.length}
-            </Animated.Text>
-          </View>
-          <View style={{flex: 0.7, justifyContent: 'center'}}>
+        {!showResult && (
+          <View style={{flexDirection: 'row'}}>
+            <View
+              style={[
+                {flex: 0.2, justifyContent: 'center', alignItems: 'center'},
+              ]}>
+              <Animated.Text style={[textContainerStyle]}>
+                {current + 1}/{quizs.length}
+              </Animated.Text>
+            </View>
+            <View style={{flex: 0.7, justifyContent: 'center'}}>
+              <View
+                style={{
+                  height: 15,
+                  backgroundColor: '#f5f5f5',
+                  marginVertical: 5,
+                  marginHorizontal: 10,
+                  borderRadius: 50,
+                }}>
+                <Animated.View
+                  style={[
+                    {
+                      position: 'absolute',
+                      backgroundColor: showResult ? GREEN_COLOR : PRIME_COLOR,
+                      left: 0,
+                      height: 15,
+                      borderRadius: 50,
+                    },
+                    pStyle,
+                  ]}
+                />
+              </View>
+            </View>
             <View
               style={{
-                height: 15,
-                backgroundColor: '#f5f5f5',
-                marginVertical: 5,
-                marginHorizontal: 10,
-                borderRadius: 50,
+                flex: 0.2,
+                //marginHorizontal: 3,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}>
-              <Animated.View
-                style={[
-                  {
-                    position: 'absolute',
-                    backgroundColor: showResult ? GREEN_COLOR : PRIME_COLOR,
-                    left: 0,
-                    height: 15,
-                    borderRadius: 50,
-                  },
-                  pStyle,
-                ]}
+              <CancelIconBtn
+                size={35}
+                onPress={() => {
+                  setCancelRequest(true);
+                }}
               />
             </View>
           </View>
-          <View
-            style={{
-              flex: 0.2,
-              //marginHorizontal: 3,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <CancelIconBtn
-              size={35}
-              onPress={() => {
-                setCancelRequest(true);
-              }}
-            />
-          </View>
-        </View>
+        )}
       </View>
       <View style={styles.body}>
         {showResult ? (
-          <ResultScreen answers={answers} quizs={dummyData} />
+          <ResultScreen
+            setCancelRequest={setCancelRequest}
+            answers={answers}
+            quizs={quizs}
+          />
         ) : (
           <RenderQuiz />
         )}

@@ -14,14 +14,33 @@ const {width, height} = Dimensions.get('window');
 export default function main() {
   const [screenAt, setScreenAt] = useState(0);
   const backAction = () => {
-    Alert.alert('✋Байз!', 'Та гарах гэж байгаадаа итгэлтэй байна уу?', [
-      {
-        text: 'Үгүй',
-        onPress: () => null,
-        style: 'cancel',
-      },
-      {text: 'Тийм', onPress: () => BackHandler.exitApp()},
-    ]);
+    console.log(screenAt);
+    if (screenAt == 0) {
+      Alert.alert('Гарах', 'Та гарах гэж байна уу?', [
+        {
+          text: 'Үгүй',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {text: 'Тийм', onPress: () => BackHandler.exitApp()},
+      ]);
+    } else if (screenAt == 1) {
+      Alert.alert('✋Байз!', 'Та гарах гэж байгаадаа итгэлтэй байна уу?', [
+        {
+          text: 'Үгүй',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'Тийм',
+          onPress: () => {
+            setScreenAt(0);
+          },
+        },
+      ]);
+    } else if (screenAt == 2) {
+      setScreenAt(0);
+    }
     return true;
   };
 
@@ -30,7 +49,7 @@ export default function main() {
 
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
-  }, []);
+  }, [screenAt]);
   const handleScreenSwitch = e => {
     setScreenAt(e);
   };

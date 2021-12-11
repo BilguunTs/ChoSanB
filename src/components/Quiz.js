@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {FlatList, View, Text, StyleSheet} from 'react-native';
 import Animated, {
   LightSpeedInRight,
@@ -6,16 +6,22 @@ import Animated, {
 } from 'react-native-reanimated';
 //import Card from '../components/Card';
 import {ChoiceBtn, CommonBtn} from './Buttons';
-
+import {shuffle} from '../utils';
 export default function ({quiz, isLast = false, actionHandler = () => {}}) {
   const [selected, setSelected] = useState(null);
+  const [options, setOptions] = useState([]);
+  useEffect(() => {
+    if (options.length == 0) {
+      setOptions(shuffle(quiz.options, 4));
+    }
+  }, []);
   const handleNextAction = () => {
     actionHandler(selected);
   };
   const getAnswerChoices = () => {
     return (
       <FlatList
-        data={quiz.options}
+        data={options}
         renderItem={({item, index}) => (
           <ChoiceBtn
             active={selected == quiz.options[index]}
