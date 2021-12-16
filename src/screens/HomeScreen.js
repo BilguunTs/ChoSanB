@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -11,11 +11,7 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
-  withDelay,
-  withSpring,
-  withTiming,
   BounceInDown,
-  BounceOutUp,
   SlideInUp,
   SlideOutUp,
   BounceOutLeft,
@@ -24,13 +20,7 @@ const {width, height} = Dimensions.get('window');
 const PRIME_COLOR = '#fff176';
 export default function HomeScreen(props) {
   const transitionAt = useSharedValue(1);
-  useEffect(() => {
-    // initView();
-  }, []);
-  const initView = () => {
-    'worklet';
-    transitionAt.value = withDelay(1000, withTiming(1));
-  };
+
   const headerStyle = useAnimatedStyle(() => {
     const flexVal = interpolate(
       transitionAt.value,

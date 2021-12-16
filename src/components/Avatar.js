@@ -13,7 +13,7 @@ export default function Avatar({
   switch (tag) {
     case '+':
       title = 'гишүүн';
-      name = 'Цэрэнтогтох';
+      name = 'Цэдэнсодном';
       source = require('../assets/propics/tsedke.jpg');
       break;
     case 'Ч':
