@@ -35,7 +35,7 @@ export default function ({
     const height = interpolate(
       expand.value,
       [0, 1],
-      [70, 130],
+      [70, 160],
       Extrapolate.CLAMP,
     );
     return {

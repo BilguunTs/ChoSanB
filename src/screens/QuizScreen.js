@@ -35,11 +35,11 @@ export default function QuizScreen({jumpTo}) {
     }
   }, []);
   useEffect(() => {
-    if (quiz == null) {
-      setQuiz(dummyData[0]);
+    if (quiz == null && quizs.length !== 0) {
+      setQuiz(quizs[0]);
     }
     textFlagVal.value = withDelay(200, withSpring(0));
-  }, [current, showResult]);
+  }, [current, showResult, quizs]);
   const aCurrent = useSharedValue(current);
 
   const handleNextAction = answer => {
@@ -87,11 +87,7 @@ export default function QuizScreen({jumpTo}) {
     };
   });
   const pStyle = useAnimatedStyle(() => {
-    const width = interpolate(
-      aCurrent.value,
-      [0, dummyData.length - 1],
-      [0, 100],
-    );
+    const width = interpolate(aCurrent.value, [0, quizs.length - 1], [0, 100]);
     const translateY = interpolate(textFlagVal.value, [0, 1], [0, -20]);
     const scale = interpolate(textFlagVal.value, [0, 1], [1, 2]);
     return {

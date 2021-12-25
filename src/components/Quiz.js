@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {FlatList, View, Text, StyleSheet} from 'react-native';
+import {FlatList, View, Text, StyleSheet, ScrollView} from 'react-native';
 import Animated, {
   LightSpeedInRight,
   LightSpeedOutLeft,
@@ -7,6 +7,7 @@ import Animated, {
 //import Card from '../components/Card';
 import {ChoiceBtn, CommonBtn} from './Buttons';
 import {shuffle} from '../utils';
+
 export default function ({quiz, isLast = false, actionHandler = () => {}}) {
   const [selected, setSelected] = useState(null);
   const [options, setOptions] = useState([]);
@@ -50,9 +51,9 @@ export default function ({quiz, isLast = false, actionHandler = () => {}}) {
       }}
       exiting={LightSpeedOutLeft.damping(1000)}
       entering={LightSpeedInRight.duration(1000)}>
-      <View style={styles.header}>
+      <ScrollView style={styles.header}>
         <Text style={styles.question}>{quiz.question}</Text>
-      </View>
+      </ScrollView>
       <View style={styles.body}>{getAnswerChoices()}</View>
       <View style={styles.footer}>
         <CommonBtn
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
   header: {
     flex: 0.3,
     paddingBottom: 5,
+    flexGrow: 0.3,
     paddingHorizontal: 5,
   },
   body: {

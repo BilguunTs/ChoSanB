@@ -14,6 +14,7 @@ export default class TeamIntroScreen extends Component {
       return (
         <FlatGrid
           itemDimension={80}
+          maxDimension={80}
           data={members}
           style={{flex: 0.5}}
           renderItem={({item, index}) => (
@@ -28,7 +29,7 @@ export default class TeamIntroScreen extends Component {
     return (
       <Animated.View
         entering={LightSpeedInRight.duration(700)}
-        exiting={BounceOutDown.delay(1000)}
+        exiting={BounceOutDown.delay(200)}
         style={styles.container}>
         <Animated.View
           style={{
