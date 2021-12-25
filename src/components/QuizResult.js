@@ -130,7 +130,8 @@ const QuizResult = ({
           style={{
             color: '#000',
             fontSize: 20,
-            fontWeight: '200',
+            marginTop: 10,
+            fontWeight: '300',
             textAlign: 'center',
           }}>
           дүн харах

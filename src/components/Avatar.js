@@ -62,7 +62,13 @@ export default function Avatar({
           style={[styles.profileImg, {transform: [{scale: isPro ? 1 : 1}]}]}
         />
       </TouchableHighlight>
-      <Text style={{color: '#000', textAlign: 'center', fontWeight: '400'}}>
+      <Text
+        style={{
+          color: '#000',
+          textAlign: 'center',
+          fontWeight: '400',
+          fontSize: tag == '+' ? 13 : 14,
+        }}>
         {name}
       </Text>
       <Text
